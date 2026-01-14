@@ -50,3 +50,7 @@ Route::get('/conclusiones', [ConclusionController::class, 'index']);
 use App\Http\Controllers\Api\VendedorController;
 
 Route::get('/vendedores', [VendedorController::class, 'index']);
+
+//Rutas para editar el formulario seguimiento prospecto 
+
+Route::put('/prospecto/{id}/seguimiento', [ProspectoController::class, 'updateSeguimiento']);

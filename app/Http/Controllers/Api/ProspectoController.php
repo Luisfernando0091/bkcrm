@@ -92,4 +92,49 @@ class ProspectoController extends Controller
     }
 
 
+
+
+public function updateSeguimiento(Request $request, $prospectoId)
+{
+    $prospecto = Prospecto::findOrFail($prospectoId);
+
+    // ====== CAMPOS NORMALES ======
+    $prospecto->fill($request->except([
+        'nombre_archivo1',
+        'nombre_archivo2'
+    ]));
+
+    // ====== ASEGURAR CARPETA ======
+    $path = public_path('img');
+    if (!file_exists($path)) {
+        mkdir($path, 0777, true);
+    }
+
+    // ====== ARCHIVO 1 ======
+    if ($request->hasFile('nombre_archivo1')) {
+        $file = $request->file('nombre_archivo1');
+        $name = time().'_'.$file->getClientOriginalName();
+        $file->move($path, $name);
+
+        $prospecto->nombre_archivo1 = url('img/'.$name);
+        $prospecto->archivo1 = $name;
+    }
+
+    // ====== ARCHIVO 2 ======
+    if ($request->hasFile('nombre_archivo2')) {
+        $file = $request->file('nombre_archivo2');
+        $name = time().'_'.$file->getClientOriginalName();
+        $file->move($path, $name);
+
+        $prospecto->nombre_archivo2 = url('img/'.$name);
+        $prospecto->archivo2 = $name;
+    }
+
+    $prospecto->save();
+
+    return response()->json([
+        'ok' => true,
+        'message' => 'Seguimiento actualizado correctamente'
+    ]);
+}
 }
